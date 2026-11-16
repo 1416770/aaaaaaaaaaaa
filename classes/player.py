@@ -1,5 +1,6 @@
 import pygame
 import os
+from classes.block import Block
 
 temp_floor = 320
 
@@ -12,7 +13,7 @@ class Player:
     speed = 0.5
     jump_power = 5
     last_mined = 0
-    mining_cooldown = 2
+    mining_cooldown = 1000
 
     def __init__(self, surface: pygame.surface, x: int, y: int):
         self.x = x
@@ -47,9 +48,25 @@ class Player:
     def move_right(self, delta_time: float):
         self.rect.x += self.speed * delta_time
 
-    def mine(self, elapsed: float):
-        if (elapsed - self.last_mined) >= self.mining_cooldown:
-            self.last_mined = elapsed
+    def mine(self, blocks: list[Block]):
+        ticks = pygame.time.get_ticks()
+        if (ticks - self.last_mined) >= self.mining_cooldown:
+            self.last_mined = ticks
 
-            
-        print("mine")
+            player_position = pygame.Vector2(self.x, self.y)
+            nearest_block = None
+            nearest_distance = 10000
+
+            for block in blocks:
+                if block.is_breakable():
+                    block_position = pygame.Vector2(block.x, block.y)
+
+                    distance = (block_position - player_position).magnitude()
+                    if distance < nearest_distance:
+                        nearest_distance = distance
+                        nearest_block = block
+
+            if nearest_block:
+                nearest_block.destroy()
+
+                print("aaa")

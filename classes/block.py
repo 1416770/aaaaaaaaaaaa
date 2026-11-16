@@ -14,25 +14,28 @@ class Block:
     x: int
     y: int
 
-    def generate_model(self):
-        image = pygame.image.load(os.path.join("resources", f"{self.type}.png")).convert_alpha()
+    def set_type(self, type: str, x = 0, y = 0):
+        self.type = type
+
+        image = pygame.image.load(os.path.join("resources", f"{type}.png")).convert_alpha()
         self.image = image
-        self.rect = image.get_rect()
+
+        rect = image.get_rect()
+        rect.x = x
+        rect.y = y
+        self.rect = rect
 
     def __init__(self, surface: pygame.surface, type: str, x: int, y: int):
         self.x = x
         self.y = y
         self.surface = surface
-        self.type = type
-        self.generate_model()
-        self.rect.x = x
-        self.rect.y = y
+        self.set_type(type, x, y)
 
     def draw(self):
         self.surface.blit(self.image, self.rect)
 
     def is_breakable(self) -> bool:
-        return self.type 
+        return self.type not in immune_block_types
 
     def destroy(self):
         self.type = "sky"

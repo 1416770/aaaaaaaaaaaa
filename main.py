@@ -36,12 +36,12 @@ for x in range(0, width, 64):
 
 running = True
 delta_time = 0
-elapsed = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+    screen.fill("black")
     for block in blocks:
         block.draw()
 
@@ -53,13 +53,12 @@ while running:
     if keys_pressed[pygame.K_d]:
         player.move_right(delta_time)
     if keys_pressed[pygame.K_SPACE]:
-        player.mine(elapsed)
+        player.mine(blocks)
 
     player.process(delta_time)
     player.draw()
 
     pygame.display.flip()
     delta_time = clock.tick(60)
-    elapsed += delta_time
 
 pygame.quit()
