@@ -47,7 +47,7 @@ while running:
 
     keys_pressed = pygame.key.get_pressed()
     if keys_pressed[pygame.K_w]:
-        player.jump(delta_time)
+        player.jump(delta_time, blocks)
     if keys_pressed[pygame.K_a]:
         player.move_left(delta_time)
     if keys_pressed[pygame.K_d]:
@@ -55,7 +55,7 @@ while running:
     if keys_pressed[pygame.K_SPACE]:
         player.mine(blocks)
 
-    player.process(delta_time)
+    player.process(delta_time, blocks)
     player.draw()
 
     pygame.display.flip()

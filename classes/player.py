@@ -22,7 +22,7 @@ class Player:
         rect.y = y
         self.rect = rect
 
-    def get_nearest_block(self, blocks: list[Block]) -> Block:
+    def get_nearest_block(self, blocks: list[Block]) -> list[Block, float]:
         player_position = pygame.Vector2(self.rect.x, self.rect.y)
         nearest_block = None
         nearest_distance = 10000
@@ -36,22 +36,22 @@ class Player:
                     nearest_distance = distance
                     nearest_block = block
 
-        return nearest_block, nearest_distance
+        return (nearest_block, nearest_distance)
 
-    def is_grounded(self) -> bool:
-        nearest_block = self.get_nearest_block()
+    def is_grounded(self, blocks: list[Block]) -> bool:
+        nearest_block = self.get_nearest_block(blocks)[0]
         
-        return self.rect.y >= nearest_block.rect.y
+        return self.rect.y < nearest_block.rect.y
 
-    def process(self, delta_time: float):
-        if not self.is_grounded():
+    def process(self, delta_time: float, blocks: list[Block]):
+        if not self.is_grounded(blocks):
             self.rect.y += self.gravity * delta_time
 
     def draw(self):
         self.surface.blit(self.image, self.rect)
 
-    def jump(self, delta_time: float):
-        if self.is_grounded():
+    def jump(self, delta_time: float, blocks: list[Block]): # jump is broken and so is gravity
+        if self.is_grounded(blocks):
             self.rect.y -= self.jump_power * delta_time
 
     def move_left(self, delta_time: float):
@@ -65,6 +65,6 @@ class Player:
         if (ticks - self.last_mined) >= self.mining_cooldown:
             self.last_mined = ticks
 
-            nearest_block, nearest_distance = self.get_nearest_block(blocks)
-            if nearest_block and nearest_distance <= 70:
-                nearest_block.destroy()
+            nearest_block = self.get_nearest_block(blocks)
+            if nearest_block[0] and nearest_block[1] <= 70:
+                nearest_block[0].destroy()
