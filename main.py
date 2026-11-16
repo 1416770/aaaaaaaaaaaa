@@ -7,8 +7,6 @@ pygame.init()
 width, height = 1280, 720
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
-running = True
-delta_time = 0
 
 player = Player(screen, width / 2, 320)
 
@@ -36,12 +34,13 @@ for x in range(0, width, 64):
     for y in range(0, height, 64):
         blocks.append(get_block(x, y))
 
+running = True
+delta_time = 0
+elapsed = 0
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    screen.fill("black")
 
     for block in blocks:
         block.draw()
@@ -53,11 +52,14 @@ while running:
         player.move_left(delta_time)
     if keys_pressed[pygame.K_d]:
         player.move_right(delta_time)
+    if keys_pressed[pygame.K_SPACE]:
+        player.mine(elapsed)
 
     player.process(delta_time)
     player.draw()
 
     pygame.display.flip()
     delta_time = clock.tick(60)
+    elapsed += delta_time
 
 pygame.quit()
