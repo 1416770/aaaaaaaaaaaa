@@ -61,12 +61,11 @@ class Player:
                 if block.is_breakable():
                     block_position = pygame.Vector2(block.x, block.y)
 
-                    distance = (block_position - player_position).magnitude()
+                    distance = (player_position - block_position).magnitude()
                     if distance < nearest_distance:
                         nearest_distance = distance
                         nearest_block = block
 
-            if nearest_block:
+            print(nearest_distance)
+            if nearest_block and nearest_distance <= 100:
                 nearest_block.destroy()
-
-                print("aaa")

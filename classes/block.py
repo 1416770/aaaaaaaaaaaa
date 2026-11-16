@@ -38,5 +38,4 @@ class Block:
         return self.type not in immune_block_types
 
     def destroy(self):
-        self.type = "sky"
-        self.generate_model()
+        self.set_type("sky", self.x, self.y)
