@@ -4,7 +4,8 @@ from classes.block import Block
 from classes.player import Player
 
 pygame.init()
-width, height = 1280, 720
+width = pygame.display.Info().current_w
+height = pygame.display.Info().current_h
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
@@ -15,7 +16,7 @@ layers = [
     [448, [["dirt", 100]]],
     [384, [["grass", 100]]],
     [128, [["sky", 100]]],
-    [0, [["cloud", 5], ["sky", 100]]]
+    [0, [["cloud", 10], ["sky", 100]]]
 ]
 
 def get_block(x: int, y: int) -> Block:
@@ -33,7 +34,7 @@ blocks = []
 for x in range(0, width, 64):
     for y in range(0, height, 64):
         blocks.append(get_block(x, y))
-
+ 
 running = True
 delta_time = 0
 while running:
