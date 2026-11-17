@@ -27,16 +27,20 @@ class Player:
     last_floor = 0
     mined = {}
 
-    def __init__(self, surface: pygame.surface, x: int, y: int):
-        self.surface = surface
+    def set_type(self, type: str, x = 0, y = 0):
+        self.type = type
 
-        image = pygame.image.load(os.path.join("resources", "player.png")).convert_alpha()
+        image = pygame.image.load(os.path.join("resources", f"{type}.png")).convert_alpha()
         self.image = image
 
         rect = image.get_rect()
         rect.x = x
         rect.y = y
         self.rect = rect
+
+    def __init__(self, surface: pygame.surface, x: int, y: int):
+        self.surface = surface
+        self.set_type("player", x, y)
 
     def get_nearest_breakable_block(self, blocks: list[Block]) -> Block:
         player_position = pygame.Vector2(self.rect.midbottom)
@@ -71,15 +75,15 @@ class Player:
         if not self.is_above_ground(blocks):
             self.rect.bottom = clamp(self.rect.bottom + self.gravity * delta_time, 0, self.last_floor)
 
+    def draw(self):
         screen = self.surface
+        screen.blit(self.image, self.rect)
+
         index = 0
         for ore, amount in self.mined.items():
             text_surface = comic_sans_ms.render(f"{ore}: {amount}", True, (0, 0, 0))
             screen.blit(text_surface, (0, index))
             index += comic_sans_ms.get_height()
-
-    def draw(self):
-        self.surface.blit(self.image, self.rect)
 
     def can_jump(self, blocks: list[Block]) -> bool:
         player_position = pygame.Vector2(self.rect.midtop)
@@ -96,9 +100,11 @@ class Player:
             self.rect.y -= self.jump_power * delta_time
 
     def move_left(self, delta_time: float):
+        self.set_type("player_left", self.rect.x, self.rect.y)
         self.rect.x -= self.speed * delta_time
 
     def move_right(self, delta_time: float):
+        self.set_type("player_right", self.rect.x, self.rect.y)
         self.rect.x += self.speed * delta_time
 
     def mine(self, blocks: list[Block]):
@@ -108,4 +114,9 @@ class Player:
 
             nearest_block = self.get_nearest_breakable_block(blocks)
             if nearest_block:
+                if nearest_block.type in self.mined:
+                    self.mined[nearest_block.type] += 1
+                else:
+                    self.mined[nearest_block.type] = 1
+
                 nearest_block.destroy()

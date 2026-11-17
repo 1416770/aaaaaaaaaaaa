@@ -11,6 +11,12 @@ clock = pygame.time.Clock()
 
 player = Player(screen, width / 2, 320)
 
+pygame.font.init()
+comic_sans_ms = pygame.font.SysFont("Comic Sans MS", 20)
+title_surface = comic_sans_ms.render("shitty minecraft [SPACE to mine]", True, (0, 0, 0))
+title_rect = title_surface.get_rect()
+title_rect.x = width / 2 - title_rect.width / 2
+
 layers = [
     [512, [["diamond", 5], ["gold", 10], ["iron", 20], ["stone", 100]]],
     [448, [["dirt", 100]]],
@@ -58,6 +64,8 @@ while running:
 
     player.process(delta_time, blocks)
     player.draw()
+
+    screen.blit(title_surface, title_rect)
 
     pygame.display.flip()
     delta_time = clock.tick(60)
